@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catch the Ball Riya</title>
+  <style>
+    canvas {
+      background: #f0f0f0;
+      display: block;
+      margin: 0 auto;
+    }
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <h1>Hai Riya Joshy</h1>
+  <canvas id="gameCanvas" width="800" height="600"></canvas>
+  <script>
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+
+    // Game variables
+    let paddleX = canvas.width / 2 - 50;
+    const paddleWidth = 100;
+    const paddleHeight = 10;
+    const paddleSpeed = 10;
+
+    let ballX = Math.random() * (canvas.width - 20) + 10;
+    let ballY = 0;
+    const ballRadius = 10;
+    let ballSpeed = 2;
+
+    let score = 0;
+
+    // Draw paddle
+    function drawPaddle() {
+      ctx.fillStyle = "blue";
+      ctx.fillRect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+    }
+
+    // Draw ball
+    function drawBall() {
+      ctx.beginPath();
+      ctx.arc(ballX, ballY, ballRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "red";
+      ctx.fill();
+      ctx.closePath();
+    }
+
+    // Draw score
+    function drawScore() {
+      ctx.font = "20px Arial";
+      ctx.fillStyle = "black";
+      ctx.fillText(`Score: ${score}`, 10, 20);
+    }
+
+    // Move paddle
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowLeft" && paddleX > 0) {
+        paddleX -= paddleSpeed;
+      } else if (event.key === "ArrowRight" && paddleX < canvas.width - paddleWidth) {
+        paddleX += paddleSpeed;
+      }
+    });
+
+    // Update game logic
+    function update() {
+      ballY += ballSpeed;
+
+      // Check for collision with paddle
+      if (
+        ballY + ballRadius >= canvas.height - paddleHeight &&
+        ballX >= paddleX &&
+        ballX <= paddleX + paddleWidth
+      ) {
+        ballSpeed += 0.2; // Increase speed after every hit
+        score++;
+        ballY = 0;
+        ballX = Math.random() * (canvas.width - 20) + 10;
+      }
+
+      // Check if ball hits the bottom
+      if (ballY > canvas.height) {
+        alert(`Game Over! Your Score: ${score}`);
+        document.location.reload();
+      }
+    }
+
+    // Draw everything
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawPaddle();
+      drawBall();
+      drawScore();
+    }
+
+    // Game loop
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    // Start the game
+    gameLoop();
+  </script>
+</body>
+</html>
